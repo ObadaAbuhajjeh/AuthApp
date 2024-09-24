@@ -1,7 +1,17 @@
-import { useFormik } from "formik"
 import axios from "axios";
+import { useFormik } from "formik"
+import { useNavigate } from "react-router-dom";
+import * as yup from "yup";
+import { jwtDecode } from "jwt-decode";
 
-export default function Login() {
+export default function Login(setIsLogin,setUserData) {
+    const navigate = useNavigate();
+
+
+    const schema = yup.object({
+        email:yup.string().required().min(5).max(100).email(),
+        password:yup.string().required().min(2).max(100),
+    });
 
     const formik = useFormik({
         initialValues: {
@@ -9,23 +19,20 @@ export default function Login() {
             password: ''
         },
         onSubmit: LoginUser,
-        validate: values => {
-            let errors = {};
-            if (values.email.length <= 10) {
-                errors.email = "Email should be at least 10 characters long";
-            }
-            if (values.password.length <= 6) {
-                errors.password = "Password should be at least 6 characters long";
-            }
-            return errors;
-        }
+        validationSchema:schema
     });
     async function LoginUser() {
 
         const { data } = await axios.post(`https://ecommerce-node4.onrender.com/auth/signin`, formik.values);
         console.log(data);
+        if (data.message === 'success') {
+            localStorage.setItem('userToken', data.token);
+            setIsLogin(true);
+            const decoded = jwtDecode(data.token);
+            setUserData(decoded);
+            navigate('/');
+        }
     }
-
     return (
         <div className="container">
             <h1>Login</h1>

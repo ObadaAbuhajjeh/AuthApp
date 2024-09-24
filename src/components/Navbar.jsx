@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-export default function Navbar() {
+export default function Navbar({isLogin,handleLogout,userData}) {
     return (
         <nav className="navbar navbar-expand-lg bg-primary mb-4">
             <div className="container">
@@ -10,15 +10,28 @@ export default function Navbar() {
                 </button>
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-                        <li className="nav-item">
+                        {
+                            isLogin?<>
+                            <li className="nav-item">
                             <Link className="nav-link" to={'/'}>Home</Link>
-                        </li>
-                        <li className="nav-item">
+                             </li>
+                             <li className="nav-item">
+                             <Link className="nav-link" to={'/'}>Welcome {userData}</Link>
+                             </li>
+                                <li className="nav-item">
+                                 <a className="nav-link" onClick={handleLogout}>Logout</a>
+                                 </li>
+                            </>
+                            :
+                            <>
+                            <li className="nav-item">
                             <Link className="nav-link" to={'/login'}>Login</Link>
-                        </li>
-                        <li className="nav-item">
+                            </li>
+                            <li className="nav-item">
                             <Link className="nav-link" to={'/register'}>Register</Link>
-                        </li>
+                            </li>
+                            </>
+                        }
                     </ul>
                 </div>
             </div>
